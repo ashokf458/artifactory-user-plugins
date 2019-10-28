@@ -39,6 +39,7 @@ class ArtifactCleanupTest extends Specification {
         when:
         artifactory.plugins().execute('cleanup').
             withParameter('repos', 'maven-local').
+            withParameter('namePart', 'test').
             withParameter('timeUnit', 'month').
             withParameter('timeInterval', '0').sync()
         artifactory.repository('maven-local').file('test').info()
@@ -68,6 +69,7 @@ class ArtifactCleanupTest extends Specification {
         when:
         artifactory.plugins().execute('cleanup').
             withParameter('repos', 'maven-local').
+            withParameter('namePart', 'test').
             withParameter('months', '0').sync()
         artifactory.repository('maven-local').file('test').info()
 
@@ -88,6 +90,7 @@ class ArtifactCleanupTest extends Specification {
         when:
         artifactory.plugins().execute('cleanup').
             withParameter('repos', 'maven-local').
+            withParameter('namePart', 'test').
             withParameter('timeUnit', 'month').
             withParameter('timeInterval', '0').sync()
         artifactory.repository('maven-local').file('test').info()
@@ -98,6 +101,7 @@ class ArtifactCleanupTest extends Specification {
         when:
         artifactory.plugins().execute('cleanup').
             withParameter('repos', 'maven-local').
+            withParameter('namePart', 'test').
             withParameter('timeUnit', 'month').
             withParameter('timeInterval', '0').
             withParameter('disablePropertiesSupport', 'true').sync()
@@ -123,6 +127,7 @@ class ArtifactCleanupTest extends Specification {
         artifactory.repository('maven-local').folder('foo/bar').properties().addProperty('cleanup.skip', 'true').doSet()
         artifactory.plugins().execute('cleanup').
             withParameter('repos', 'maven-local').
+            withParameter('namePart', 'test').
             withParameter('timeUnit', 'month').
             withParameter('timeInterval', '0').sync()
         artifactory.repository('maven-local').file('foo/bar/test').info()
@@ -138,6 +143,7 @@ class ArtifactCleanupTest extends Specification {
         artifactory.repository('maven-local').folder('foo').properties().addProperty('cleanup.skip', 'true').doSet()
         artifactory.plugins().execute('cleanup').
             withParameter('repos', 'maven-local').
+            withParameter('namePart', 'test').
             withParameter('timeUnit', 'month').
             withParameter('timeInterval', '0').sync()
         artifactory.repository('maven-local').file('foo/bar/test').info()
@@ -153,6 +159,7 @@ class ArtifactCleanupTest extends Specification {
         artifactory.repository('maven-local').folder('foo/bar').properties().addProperty('cleanup.skip', 'true').doSet()
         artifactory.plugins().execute('cleanup').
             withParameter('repos', 'maven-local').
+            withParameter('namePart', 'test').
             withParameter('timeUnit', 'month').
             withParameter('timeInterval', '0').sync()
         artifactory.repository('maven-local').file('foo/bar/test').info()
@@ -163,6 +170,7 @@ class ArtifactCleanupTest extends Specification {
         when:
         artifactory.plugins().execute('cleanup').
             withParameter('repos', 'maven-local').
+            withParameter('namePart', 'test').
             withParameter('timeUnit', 'month').
             withParameter('timeInterval', '0').
             withParameter('disablePropertiesSupport', 'true').sync()
@@ -190,6 +198,7 @@ class ArtifactCleanupTest extends Specification {
         when:
         artifactory.plugins().execute('cleanup').
             withParameter('repos', 'maven-local').
+            withParameter('namePart', 'test').
             withParameter('timeUnit', 'month').
             withParameter('timeInterval', '0').sync()
         artifactory.repository('maven-local').file('foobar/test').info()
@@ -225,6 +234,7 @@ class ArtifactCleanupTest extends Specification {
             .setUsername('nobody').setPassword('password').build().
             plugins().execute('cleanup').
             withParameter('repos', 'maven-local').
+            withParameter('namePart', 'test').
             withParameter('timeUnit', 'month').
             withParameter('timeInterval', '0').sync()
         artifactory.repository('maven-local').file('foo/bar/test').info()
