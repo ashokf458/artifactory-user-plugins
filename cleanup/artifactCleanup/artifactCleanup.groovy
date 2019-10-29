@@ -188,7 +188,7 @@ private def artifactCleanup(String namePattern, String timeUnit, int timeInterva
                 return true
             }
 
-            if ( ! disablePropertiesSupport && skip[ it.repoKey ] && StringUtils.startsWithAny(it.path, skip[ it.repoKey ]) && !(it.name ==~ /${namePattern}/)){
+            if (( ! disablePropertiesSupport && skip[ it.repoKey ] && StringUtils.startsWithAny(it.path, skip[ it.repoKey ])) || !(it.name ==~ /${namePattern}/)){
                 if (log.isDebugEnabled()){
                     log.debug "Skip $it"
                 }
