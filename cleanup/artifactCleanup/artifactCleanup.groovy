@@ -27,7 +27,7 @@ import java.text.SimpleDateFormat
 
 @Field final String CONFIG_FILE_PATH = "plugins/${this.class.name}.json"
 @Field final String PROPERTIES_FILE_PATH = "plugins/${this.class.name}.properties"
-@Field final String DEFAULT_NAME_PART = "__none__"
+@Field final String DEFAULT_NAME_PATTERN = "__none__"
 @Field final String DEFAULT_TIME_UNIT = "month"
 @Field final int DEFAULT_TIME_INTERVAL = 1
 
@@ -51,10 +51,10 @@ def pluginGroup = 'cleaners'
 
 executions {
     cleanup(groups: [pluginGroup]) { params ->
-        def namePart = params['namePart'] ? params['timeUnit'][0] as String : DEFAULT_NAME_PART
         def timeUnit = params['timeUnit'] ? params['timeUnit'][0] as String : DEFAULT_TIME_UNIT
         def timeInterval = params['timeInterval'] ? params['timeInterval'][0] as int : DEFAULT_TIME_INTERVAL
         def repos = params['repos'] as String[]
+        def namePattern = params['namePattern'] ? params['namePattern'] as String : DEFAULT_NAME_PATTERN
         def dryRun = params['dryRun'] ? new Boolean(params['dryRun'][0]) : false
         def disablePropertiesSupport = params['disablePropertiesSupport'] ? new Boolean(params['disablePropertiesSupport'][0]) : false
         Global.paceTimeMS = params['paceTimeMS'] ? params['paceTimeMS'][0] as int : 0
@@ -67,7 +67,7 @@ executions {
             log.warn('Deprecated month parameter and the new timeInterval are used in parallel: month has been ignored.', properties)
         }
 
-        artifactCleanup(namePart, timeUnit, timeInterval, repos, log, Global.paceTimeMS, dryRun, disablePropertiesSupport)
+        artifactCleanup(namePattern, timeUnit, timeInterval, repos, log, Global.paceTimeMS, dryRun, disablePropertiesSupport)
     }
 
     cleanupCtl(groups: [pluginGroup]) { params ->
@@ -134,7 +134,7 @@ if ( configFile.exists() ) {
     config.policies.each{ policySettings ->
         def cron = policySettings.containsKey("cron") ? policySettings.cron as String : ["0 0 5 ? * 1"]
         def repos = policySettings.containsKey("repos") ? policySettings.repos as String[] : ["__none__"]
-        def namePart = policySettings.containsKey("namePart") ? policySettings.repos as String : DEFAULT_NAME_PART
+        def namePattern = policySettings.containsKey("namePattern") ? policySettings.repos as String : DEFAULT_NAME_PATTERN
         def timeUnit = policySettings.containsKey("timeUnit") ? policySettings.timeUnit as String : DEFAULT_TIME_UNIT
         def timeInterval = policySettings.containsKey("timeInterval") ? policySettings.timeInterval as int : DEFAULT_TIME_INTERVAL
         def paceTimeMS = policySettings.containsKey("paceTimeMS") ? policySettings.paceTimeMS as int : 0
@@ -144,7 +144,7 @@ if ( configFile.exists() ) {
         jobs {
             "scheduledCleanup_$cron"(cron: cron) {
                 log.info "Policy settings for scheduled run at($cron): repo list($repos), timeUnit($timeUnit), timeInterval($timeInterval), paceTimeMS($paceTimeMS) dryrun($dryRun) disablePropertiesSupport($disablePropertiesSupport)"
-                artifactCleanup( namePart, timeUnit, timeInterval, repos, log, paceTimeMS, dryRun, disablePropertiesSupport )
+                artifactCleanup( namePattern, timeUnit, timeInterval, repos, log, paceTimeMS, dryRun, disablePropertiesSupport )
             }
         }
     }  
@@ -154,7 +154,7 @@ if ( deprecatedConfigFile.exists() && configFile.exists() ) {
     log.warn "The deprecated artifactCleanup.properties and the new artifactCleanup.json are defined in parallel. You should migrate the old file and remove it."
 }
 
-private def artifactCleanup(String namePart, String timeUnit, int timeInterval, String[] repos, log, paceTimeMS, dryRun = false, disablePropertiesSupport = false) {
+private def artifactCleanup(String namePattern, String timeUnit, int timeInterval, String[] repos, log, paceTimeMS, dryRun = false, disablePropertiesSupport = false) {
     log.info "Starting artifact cleanup for repositories $repos, until $timeInterval ${timeUnit}s ago with pacing interval $paceTimeMS ms, dryrun: $dryRun, disablePropertiesSupport: $disablePropertiesSupport"
 
     // Create Map(repo, paths) of skiped paths (or others properties supported in future ...)
@@ -188,7 +188,7 @@ private def artifactCleanup(String namePart, String timeUnit, int timeInterval, 
                 return true
             }
 
-            if ( ! disablePropertiesSupport && skip[ it.repoKey ] && StringUtils.startsWithAny(it.path, skip[ it.repoKey ]) && it.name ==~ /${namePart}/){
+            if ( ! disablePropertiesSupport && skip[ it.repoKey ] && StringUtils.startsWithAny(it.path, skip[ it.repoKey ]) && it.name ==~ /${namePattern}/){
                 if (log.isDebugEnabled()){
                     log.debug "Skip $it"
                 }

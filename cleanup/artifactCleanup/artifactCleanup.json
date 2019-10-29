@@ -5,9 +5,7 @@
             "repos": [
                 "libs-releases-local"
             ],
-            "namePart": [
-                "*"
-            ],
+            "namePattern": "__none__",
             "timeUnit": "day",
             "timeInterval": 3,
             "dryRun": true,
