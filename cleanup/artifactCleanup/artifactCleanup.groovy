@@ -97,8 +97,8 @@ executions {
     }
 }
 
-def deprecatedConfigFile = new File(ctx.artifactoryHome.haAwareEtcDir, PROPERTIES_FILE_PATH)
-def configFile = new File(ctx.artifactoryHome.haAwareEtcDir, CONFIG_FILE_PATH)
+def deprecatedConfigFile = new File(ctx.artifactoryHome.etcDir, PROPERTIES_FILE_PATH)
+def configFile = new File(ctx.artifactoryHome.etcDir, CONFIG_FILE_PATH)
 
 if ( deprecatedConfigFile.exists() ) {
 
@@ -229,10 +229,14 @@ private def artifactCleanup(String namePattern, String timeUnit, int timeInterva
 
     if (dryRun) {
         log.info "Dry run - nothing deleted. Found $cntFoundArtifacts artifacts consuming $bytesFound bytes"
-        log.info "From that $cntNoDeletePermissions artifacts no delete permission by user ($bytesFoundWithNoDeletePermission bytes)"
+        if (cntNoDeletePermissions > 0) {
+            log.info "$cntNoDeletePermissions artifacts cannot be deleted due to lack of permissions ($bytesFoundWithNoDeletePermission bytes)"
+        }
     } else {
-        log.info "Finished cleanup, try to delete $cntFoundArtifacts artifacts that took up $bytesFound bytes"
-        log.info "From that $cntNoDeletePermissions artifacts no delete permission by user ($bytesFoundWithNoDeletePermission bytes)"
+        log.info "Finished cleanup, deleting $cntFoundArtifacts artifacts that took up $bytesFound bytes"
+        if (cntNoDeletePermissions > 0) {
+            log.info "$cntNoDeletePermissions artifacts could not be deleted due to lack of permissions ($bytesFoundWithNoDeletePermission bytes)"
+        }
     }
 }
 
