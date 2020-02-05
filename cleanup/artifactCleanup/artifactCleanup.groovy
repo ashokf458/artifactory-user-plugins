@@ -27,7 +27,7 @@ import java.text.SimpleDateFormat
 
 @Field final String CONFIG_FILE_PATH = "plugins/${this.class.name}.json"
 @Field final String PROPERTIES_FILE_PATH = "plugins/${this.class.name}.properties"
-@Field final String DEFAULT_NAME_PATTERN = "__none__"
+@Field final String DEFAULT_NAME_PATTERN = ".*-unstable"
 @Field final String DEFAULT_TIME_UNIT = "month"
 @Field final int DEFAULT_TIME_INTERVAL = 1
 
