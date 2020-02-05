@@ -5,7 +5,7 @@
             "repos": [
                 "libs-releases-local"
             ],
-            "namePattern": "__none__",
+            "namePattern": ".*-unstable",
             "timeUnit": "day",
             "timeInterval": 3,
             "dryRun": true,
