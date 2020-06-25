@@ -21,6 +21,7 @@ import org.jfrog.lilypad.Control
  * 5.
  *
  */
+
 class WebhookTest extends Specification {
     // Artifactory
     static def BASE_URL = 'http://localhost:8088/artifactory'
@@ -107,6 +108,7 @@ executions {
      * Loads the provided configuration into the webhook
      * @param config The contents of what should go in webhook.config.json
      */
+
     def reloadAndVerifyConfig(config) {
         Control.setFileContent(BASE_PORT, WEBHOOK_CONFIG_PATH, config)
         // Force plugin reload to avoid double hook issue
@@ -1050,10 +1052,10 @@ executions {
     }
 
 
-
     /**
      * Clears the loopback endpoint
      */
+
     static def clearLoopbackBuffer() {
         callPost("${BASE_URL}/${WEBHOOK_LOOPBACK_CLEAR_URL}","")
     }
@@ -1061,6 +1063,7 @@ executions {
     /**
      * Get the stored POSTS that have been made to the loopback endpoint
      */
+
     static def getLoopbackBuffer() {
         def result = getRequest("${BASE_URL}/${WEBHOOK_LOOPBACK_GET_URL}")
         if (result.response != null)
@@ -1120,3 +1123,4 @@ executions {
     }
 
 }
+
